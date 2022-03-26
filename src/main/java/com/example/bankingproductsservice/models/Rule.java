@@ -21,7 +21,7 @@ public class Rule {
     @LastModifiedDate
     private Instant lastModifiedDate;
 
-    private Boolean isActive;
+    private Boolean isActive = true;
 
     @OneToOne(mappedBy = "rule")
     private Product product;
@@ -33,7 +33,6 @@ public class Rule {
 
 
     public Rule() {
-        isActive = true;
     }
 
     public Rule(Integer minSalary) {
@@ -98,7 +97,17 @@ public class Rule {
     }
 
 
-
+    @Override
+    public String toString() {
+        return  "   \"rule\" : {\n" +
+                "       \"id\": " + id + ",\n" +
+                "       \"createdDate\": " + createdDate + ",\n" +
+                "       \"lastModifiedDate\": " + lastModifiedDate + ",\n" +
+                "       \"isActive\": " + isActive + ",\n" +
+                "       \"minSalary\": " + minSalary + ",\n" +
+                "       \"isDebtor\": " + isDebtor + ",\n" +
+                "   }";
+    }
 
     public void delete() {
         setActive(false);

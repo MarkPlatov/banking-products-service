@@ -14,6 +14,8 @@ public class Product {
     @Column(name = "id")
     private Integer id;
 
+
+
     @CreatedDate
     private Instant createdDate;
 
@@ -28,16 +30,17 @@ public class Product {
     private Integer interestRate;
     private Integer creditTermYears;
 
-    private Boolean isActive;
+
+    private Boolean isActive = true;
 
     public Product() {
-        isActive = true;
     }
 
-    public Product(Integer maxLoanAmount, Integer interestRate, Integer creditTermYears) {
+    public Product(Integer maxLoanAmount, Integer interestRate, Integer creditTermYears, Rule rule) {
         this.maxLoanAmount = maxLoanAmount;
         this.interestRate = interestRate;
         this.creditTermYears = creditTermYears;
+        this.rule = rule;
         isActive = true;
     }
 
@@ -103,6 +106,20 @@ public class Product {
 
     public void setRule(Rule rule) {
         this.rule = rule;
+    }
+
+    @Override
+    public String toString() {
+        return "{\n" +
+                "   \"id\": " + id + ",\n" +
+                "   \"createdDate\": " + createdDate + ",\n" +
+                "   \"lastModifiedDate\": " + lastModifiedDate + ",\n" +
+                rule + ",\n" +
+                "   \"maxLoanAmount\": " + maxLoanAmount + ",\n" +
+                "   \"interestRate\": " + interestRate + ",\n" +
+                "   \"creditTermYears\": " + creditTermYears + ",\n" +
+                "   \"isActive\": " + isActive + "\n" +
+                "}";
     }
 
     public void delete() {
