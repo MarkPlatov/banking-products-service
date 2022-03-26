@@ -1,7 +1,9 @@
 package com.example.bankingproductsservice;
 
 import com.example.bankingproductsservice.models.Product;
+import com.example.bankingproductsservice.models.Rule;
 import com.example.bankingproductsservice.repos.ProductRepo;
+import com.example.bankingproductsservice.repos.RuleRepo;
 import com.example.bankingproductsservice.seeds.DBSeed;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -60,14 +62,24 @@ public class ProductsControllerTest {
                 .findAllByIsActiveTrue();
 
         String responseBody = productsController.allProducts();
+
         Assert.assertEquals("{\n\"products\": \n[null]\n}", responseBody);
-        assertNotNull(responseBody);
         Mockito.verify(productRepo, Mockito.times(1)).findAllByIsActiveTrue();
     }
 
     @Test
-    public void getRules() {
-        Assert.assertTrue(true);
+    public void getRulesFindSome() {
+        Product product = new Product(10, 10, 10);
+        Rule rule = new Rule(product, 10);
+        product.setRules(Collections.singleton(rule));
+        product.setId(0);
+        Mockito.doReturn(product)
+                .when(productRepo)
+                .findById(product.getId());
+
+        String responseBody = productsController.getRules(product.getId());
+        Assert.assertThat(responseBody, Matchers.containsString(rule.toString()));
+        Mockito.verify(productRepo, Mockito.times(1)).findById(product.getId());
     }
 
     @Test

@@ -33,7 +33,7 @@ public class ProductsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody String getRules(@PathVariable("id") int id) {
         Product product = productRepo.findById(id);
-        if (product == null) {
+        if (product == null || !product.getActive()) {
             return "";
         }
         return StringHelper.formatObjToJSON("rules", product.getRules());
