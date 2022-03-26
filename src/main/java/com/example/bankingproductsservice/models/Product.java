@@ -3,16 +3,15 @@ package com.example.bankingproductsservice.models;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
+@Table(name = "products")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Integer id;
 
     @CreatedDate
@@ -20,6 +19,10 @@ public class Product {
 
     @LastModifiedDate
     private Instant lastModifiedDate;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "rule_id", referencedColumnName = "id")
+    private Rule rule;
 
     private Integer maxLoanAmount;
     private Integer interestRate;
@@ -92,6 +95,14 @@ public class Product {
 
     public void setActive(Boolean active) {
         isActive = active;
+    }
+
+    public Rule getRule() {
+        return rule;
+    }
+
+    public void setRule(Rule rule) {
+        this.rule = rule;
     }
 
     public void delete() {
