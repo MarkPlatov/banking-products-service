@@ -2,12 +2,15 @@ package com.example.bankingproductsservice.models;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
+@EntityListeners(AuditingEntityListener.class)
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,9 +25,8 @@ public class Product {
     @LastModifiedDate
     private Instant lastModifiedDate;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "rule_id", referencedColumnName = "id")
-    private Rule rule;
+    @OneToMany(mappedBy="product")
+    private Set<Rule> rules;
 
     private Integer maxLoanAmount;
     private Integer interestRate;
@@ -36,11 +38,10 @@ public class Product {
     public Product() {
     }
 
-    public Product(Integer maxLoanAmount, Integer interestRate, Integer creditTermYears, Rule rule) {
+    public Product(Integer maxLoanAmount, Integer interestRate, Integer creditTermYears) {
         this.maxLoanAmount = maxLoanAmount;
         this.interestRate = interestRate;
         this.creditTermYears = creditTermYears;
-        this.rule = rule;
         isActive = true;
     }
 
@@ -100,12 +101,12 @@ public class Product {
         isActive = active;
     }
 
-    public Rule getRule() {
-        return rule;
+    public Set<Rule> getRules() {
+        return rules;
     }
 
-    public void setRule(Rule rule) {
-        this.rule = rule;
+    public void setRules(Set<Rule> rules) {
+        this.rules = rules;
     }
 
     @Override
@@ -114,7 +115,7 @@ public class Product {
                 "   \"id\": " + id + ",\n" +
                 "   \"createdDate\": " + createdDate + ",\n" +
                 "   \"lastModifiedDate\": " + lastModifiedDate + ",\n" +
-                rule + ",\n" +
+                "   \"rules\": " + rules.toString() + ",\n" +
                 "   \"maxLoanAmount\": " + maxLoanAmount + ",\n" +
                 "   \"interestRate\": " + interestRate + ",\n" +
                 "   \"creditTermYears\": " + creditTermYears + ",\n" +

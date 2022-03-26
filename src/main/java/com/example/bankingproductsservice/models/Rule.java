@@ -2,6 +2,7 @@ package com.example.bankingproductsservice.models;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -10,6 +11,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "rules")
+@EntityListeners(AuditingEntityListener.class)
 public class Rule {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,27 +25,37 @@ public class Rule {
 
     private Boolean isActive = true;
 
-    @OneToOne(mappedBy = "rule")
-    private Product product;
+//    @ManyToOne
+//    @JoinColumn(name="product_id", nullable=false)
+//    private Product product;
+
+//    @ManyToOne
+//    @JoinColumn(name = "product_id")
+//    private Product product;
 
     private Integer minSalary;
     private Boolean isDebtor;
 
-
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
 
     public Rule() {
     }
 
-    public Rule(Integer minSalary) {
+    public Rule(Product product, Integer minSalary) {
+        this.product = product;
         this.minSalary = minSalary;
     }
 
-    public Rule(Boolean isDebtor) {
+    public Rule(Product product, Boolean isDebtor) {
+        this.product = product;
         this.isDebtor = isDebtor;
     }
 
-    public Rule(Integer minSalary, Boolean isDebtor) {
+    public Rule(Product product, Integer minSalary, Boolean isDebtor) {
+        this.product = product;
         this.minSalary = minSalary;
         this.isDebtor = isDebtor;
     }
@@ -96,10 +108,17 @@ public class Rule {
         isDebtor = debtor;
     }
 
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 
     @Override
     public String toString() {
-        return  "   \"rule\" : {\n" +
+        return  "\n   {\n" +
                 "       \"id\": " + id + ",\n" +
                 "       \"createdDate\": " + createdDate + ",\n" +
                 "       \"lastModifiedDate\": " + lastModifiedDate + ",\n" +
