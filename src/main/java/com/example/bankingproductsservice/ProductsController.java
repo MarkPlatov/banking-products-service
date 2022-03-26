@@ -1,5 +1,6 @@
 package com.example.bankingproductsservice;
 
+import com.example.bankingproductsservice.helpers.StringHelper;
 import com.example.bankingproductsservice.models.Product;
 import com.example.bankingproductsservice.models.Rule;
 import com.example.bankingproductsservice.repos.ProductRepo;
@@ -26,33 +27,21 @@ public class ProductsController {
     @RequestMapping(value = "/products", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody String allProducts() {
-
         Iterable<Product> products = productRepo.findAllByIsActiveTrue();
-        StringBuilder s = new StringBuilder("\"products\": [ \n");
-        for (Product pr : products) {
-            s.append(pr);
-            s.append(",\n");
-        }
-        s.append("]");
-        return s.toString();
+        return StringHelper.formatObjToJSON("products", products);
     }
+
 
     @RequestMapping(value = "/products/{id}/rules", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody String getRules(@PathVariable("id") int id) {
-
         Product product = productRepo.findById(id);
         if (product == null) {
             return "";
         }
-
-        StringBuilder s = new StringBuilder("\"rules\": [ \n");
-        for (Rule rule : product.getRules()) {
-            s.append(rule);
-            s.append(",\n");
-        }
-        s.append("]");
-        return s.toString();
+        return StringHelper.formatObjToJSON("rules", product.getRules());
     }
+
+
 
 }

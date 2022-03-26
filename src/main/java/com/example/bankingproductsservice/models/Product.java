@@ -111,7 +111,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "{\n" +
+        return "\n{\n" +
                 "   \"id\": " + id + ",\n" +
                 "   \"createdDate\": " + createdDate + ",\n" +
                 "   \"lastModifiedDate\": " + lastModifiedDate + ",\n" +
