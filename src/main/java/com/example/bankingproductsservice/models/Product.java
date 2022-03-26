@@ -113,8 +113,8 @@ public class Product {
     public String toString() {
         return "\n{\n" +
                 "   \"id\": " + id + ",\n" +
-                "   \"createdDate\": " + createdDate + ",\n" +
-                "   \"lastModifiedDate\": " + lastModifiedDate + ",\n" +
+                "   \"createdDate\": \"" + createdDate + "\",\n" +
+                "   \"lastModifiedDate\": \"" + lastModifiedDate + "\",\n" +
                 "   \"rules\": " + rules.toString() + ",\n" +
                 "   \"maxLoanAmount\": " + maxLoanAmount + ",\n" +
                 "   \"interestRate\": " + interestRate + ",\n" +

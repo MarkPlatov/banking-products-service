@@ -120,8 +120,8 @@ public class Rule {
     public String toString() {
         return  "\n   {\n" +
                 "       \"id\": " + id + ",\n" +
-                "       \"createdDate\": " + createdDate + ",\n" +
-                "       \"lastModifiedDate\": " + lastModifiedDate + ",\n" +
+                "       \"createdDate\": \"" + createdDate + "\",\n" +
+                "       \"lastModifiedDate\": \"" + lastModifiedDate + "\",\n" +
                 "       \"isActive\": " + isActive + ",\n" +
                 "       \"minSalary\": " + minSalary + ",\n" +
                 "       \"isDebtor\": " + allowDebtors + ",\n" +
