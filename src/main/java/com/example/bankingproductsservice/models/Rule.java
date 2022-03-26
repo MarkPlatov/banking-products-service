@@ -25,14 +25,6 @@ public class Rule {
 
     private Boolean isActive = true;
 
-//    @ManyToOne
-//    @JoinColumn(name="product_id", nullable=false)
-//    private Product product;
-
-//    @ManyToOne
-//    @JoinColumn(name = "product_id")
-//    private Product product;
-
     private Integer minSalary;
     private Boolean allowDebtors;
 
@@ -118,6 +110,9 @@ public class Rule {
 
     @Override
     public String toString() {
+        if (!isActive){
+            return "";
+        }
         return  "\n   {\n" +
                 "       \"id\": " + id + ",\n" +
                 "       \"createdDate\": \"" + createdDate + "\",\n" +

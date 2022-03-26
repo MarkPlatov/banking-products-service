@@ -2,6 +2,7 @@ package com.example.bankingproductsservice;
 
 import com.example.bankingproductsservice.helpers.StringHelper;
 import com.example.bankingproductsservice.models.Product;
+import com.example.bankingproductsservice.models.Rule;
 import com.example.bankingproductsservice.repos.ProductRepo;
 import com.example.bankingproductsservice.repos.RuleRepo;
 import org.springframework.http.MediaType;
@@ -70,5 +71,52 @@ public class ProductsController {
 
         return StringHelper.formatObjToJSON("products", result);
     }
+
+
+    /*
+    curl -i -X POST http://localhost:8080/products/100/\?min_salary\=666
+     */
+    @RequestMapping(value = "/products/{productId}/rules", method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody String addRuleToProduct(
+            @PathVariable Integer productId,
+            @RequestParam(name = "min_salary", required = false) Integer minSalary,
+            @RequestParam(name = "allow_debtors", required = false) Boolean allowDebtors
+            ) {
+        if (minSalary == null && allowDebtors == null) {
+            return "Type minSalary or allowDebtors";
+        }
+        Product product = productRepo.findById(productId);
+        if (product == null) {
+            return "Product with id = " + productId + " not found";
+        }
+        Rule rule = new Rule(product, minSalary, allowDebtors);
+        ruleRepo.save(rule);
+        return "OK";
+    }
+
+    /*
+    curl -i -X DELETE http://localhost:8080/products/100/rules/102
+    */
+    @RequestMapping(value = "/products/{productId}/rules/{ruleID}", method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody String deleteRule(
+            @PathVariable Integer productId,
+            @PathVariable Integer ruleID
+    ) {
+        Rule rule = ruleRepo.findById(ruleID);
+        if (rule == null) {
+            return "Product with id = " + productId + " not found";
+        }
+        // Если правило не от указанного продукта
+        if (!rule.getProduct().getId().equals(productId)){
+            return "Incorrect product id or rule id";
+        }
+
+        rule.delete();
+        ruleRepo.save(rule);
+        return "OK";
+    }
+
 
 }

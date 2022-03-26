@@ -111,6 +111,9 @@ public class Product {
 
     @Override
     public String toString() {
+        if (!isActive) {
+            return "";
+        }
         return "\n{\n" +
                 "   \"id\": " + id + ",\n" +
                 "   \"createdDate\": \"" + createdDate + "\",\n" +
@@ -132,6 +135,9 @@ public class Product {
             return true;
         }
         for (Rule rule: rules){
+            if (!rule.getActive()) {
+                continue;
+            }
             if (!rule.isMatches(salary, is_debtor)) {
                 return false;
             }
