@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ProductRepo extends CrudRepository<Product, Long> {
     List<Product> findAllByIsActiveTrue();
+    Product findById(int id);
 }

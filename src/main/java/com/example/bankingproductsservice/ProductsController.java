@@ -25,16 +25,30 @@ public class ProductsController {
 
     @RequestMapping(value = "/products", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody String allProducts(Map<String, Object> model) {
+    public @ResponseBody String allProducts() {
 
-//        Rule rule = new Rule(60000, false);
-//        Product product = new Product(1000, 5, 3, rule);
-//        ruleRepo.save(rule);
-//        productRepo.save(product);
         Iterable<Product> products = productRepo.findAllByIsActiveTrue();
         StringBuilder s = new StringBuilder("\"products\": [ \n");
         for (Product pr : products) {
             s.append(pr);
+            s.append(",\n");
+        }
+        s.append("]");
+        return s.toString();
+    }
+
+    @RequestMapping(value = "/products/{id}/rules", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody String getRules(@PathVariable("id") int id) {
+
+        Product product = productRepo.findById(id);
+        if (product == null) {
+            return "";
+        }
+
+        StringBuilder s = new StringBuilder("\"rules\": [ \n");
+        for (Rule rule : product.getRules()) {
+            s.append(rule);
             s.append(",\n");
         }
         s.append("]");
