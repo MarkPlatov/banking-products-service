@@ -34,7 +34,7 @@ public class Rule {
 //    private Product product;
 
     private Integer minSalary;
-    private Boolean isDebtor;
+    private Boolean allowDebtors;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
@@ -49,15 +49,15 @@ public class Rule {
         this.minSalary = minSalary;
     }
 
-    public Rule(Product product, Boolean isDebtor) {
+    public Rule(Product product, Boolean allowDebtors) {
         this.product = product;
-        this.isDebtor = isDebtor;
+        this.allowDebtors = allowDebtors;
     }
 
-    public Rule(Product product, Integer minSalary, Boolean isDebtor) {
+    public Rule(Product product, Integer minSalary, Boolean allowDebtors) {
         this.product = product;
         this.minSalary = minSalary;
-        this.isDebtor = isDebtor;
+        this.allowDebtors = allowDebtors;
     }
 
     public Integer getId() {
@@ -101,11 +101,11 @@ public class Rule {
     }
 
     public Boolean getDebtor() {
-        return isDebtor;
+        return allowDebtors;
     }
 
     public void setDebtor(Boolean debtor) {
-        isDebtor = debtor;
+        allowDebtors = debtor;
     }
 
     public Product getProduct() {
@@ -124,11 +124,29 @@ public class Rule {
                 "       \"lastModifiedDate\": " + lastModifiedDate + ",\n" +
                 "       \"isActive\": " + isActive + ",\n" +
                 "       \"minSalary\": " + minSalary + ",\n" +
-                "       \"isDebtor\": " + isDebtor + ",\n" +
+                "       \"isDebtor\": " + allowDebtors + ",\n" +
                 "   }";
     }
 
     public void delete() {
         setActive(false);
+    }
+
+    public boolean isMatches(Integer salary, Boolean isDebtor) {
+        return isMatchesSalary(salary) && isMatchesIsDebtor(isDebtor);
+    }
+
+    private boolean isMatchesSalary(Integer salary) {
+        if (minSalary == null) return true;
+        if (salary == null) return false;
+        return salary >= minSalary;
+    }
+
+    // Если правило позволяет слиенту иметь задолженность или
+    // правило по задолженности не установлено, возвращается true
+    // Если правило не позволяет иметь задолженность, возврашается !isDebtor
+    private boolean isMatchesIsDebtor(Boolean isDebtor) {
+        if (this.allowDebtors == null || this.allowDebtors) return true;
+        return !isDebtor;
     }
 }

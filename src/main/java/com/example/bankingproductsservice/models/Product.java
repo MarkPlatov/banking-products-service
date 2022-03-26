@@ -126,4 +126,17 @@ public class Product {
     public void delete() {
         setActive(false);
     }
+
+    public boolean isMatches(Integer salary, Boolean is_debtor){
+        if (rules == null || rules.size() == 0){
+            return true;
+        }
+        for (Rule rule: rules){
+            if (!rule.isMatches(salary, is_debtor)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

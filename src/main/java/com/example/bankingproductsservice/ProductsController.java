@@ -2,15 +2,13 @@ package com.example.bankingproductsservice;
 
 import com.example.bankingproductsservice.helpers.StringHelper;
 import com.example.bankingproductsservice.models.Product;
-import com.example.bankingproductsservice.models.Rule;
 import com.example.bankingproductsservice.repos.ProductRepo;
 import com.example.bankingproductsservice.repos.RuleRepo;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Map;
+import java.util.List;
 
 @Controller
 public class ProductsController {
@@ -43,5 +41,32 @@ public class ProductsController {
     }
 
 
+    // http://localhost:8080/products/apply?salary=60000&claim=300000&is_debtor=false
+    // http://localhost:8080/products/apply?salary=30000&claim=20000&is_debtor=true
+    @RequestMapping(value = "/products/apply", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody String getProductsForClient(
+            @RequestParam(name = "salary") Integer salary,
+            @RequestParam(name = "claim") Integer claim,
+            @RequestParam(name = "is_debtor") Boolean isDebtor
+    ) {
+        // Все продукты, предоставляющие кредит на сумму большую или эквивалентную указанной (claim)
+        List<Product> products = productRepo.findAllByMaxLoanAmountIsGreaterThanEqualAndIsActiveTrue(claim);
+        // Все продукты, предоставляющие кредит на любую сумму
+        products.addAll(productRepo.findAllByMaxLoanAmountIsNullAndIsActiveTrue());
+
+        if (products.size() == 0) {
+            return "";
+        }
+
+        StringBuilder result = new StringBuilder("");
+        for (Product product : products){
+            if (product.isMatches(salary, isDebtor)){
+                result.append(product);
+            }
+        }
+
+        return StringHelper.formatObjToJSON("products", result);
+    }
 
 }
