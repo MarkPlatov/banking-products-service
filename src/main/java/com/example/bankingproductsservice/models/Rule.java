@@ -136,6 +136,7 @@ public class Rule {
         return isMatchesSalary(salary) && isMatchesIsDebtor(isDebtor);
     }
 
+    // Примечание: Если переданная зп равна минимальной зп в правиле, вернёт true;
     private boolean isMatchesSalary(Integer salary) {
         if (minSalary == null) return true;
         if (salary == null) return false;

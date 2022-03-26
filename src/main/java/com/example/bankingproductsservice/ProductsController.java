@@ -41,9 +41,11 @@ public class ProductsController {
     }
 
 
-    // http://localhost:8080/products/apply?salary=60000&claim=300000&is_debtor=false
-    // http://localhost:8080/products/apply?salary=30000&claim=20000&is_debtor=true
-    @RequestMapping(value = "/products/apply", method = RequestMethod.GET,
+    /*
+    curl -i -X POST http://localhost:8080/products/apply\?salary\=30000\&claim\=20000\&is_debtor\=true
+    curl -i -X POST http://localhost:8080/products/apply\?salary\=60000\&claim\=300000\&is_debtor\=false
+     */
+    @RequestMapping(value = "/products/apply", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody String getProductsForClient(
             @RequestParam(name = "salary") Integer salary,
