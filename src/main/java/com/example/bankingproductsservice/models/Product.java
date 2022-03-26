@@ -118,7 +118,7 @@ public class Product {
                 "   \"id\": " + id + ",\n" +
                 "   \"createdDate\": \"" + createdDate + "\",\n" +
                 "   \"lastModifiedDate\": \"" + lastModifiedDate + "\",\n" +
-                "   \"rules\": " + rules.toString() + ",\n" +
+                "   \"rules\": " + rules + ",\n" +
                 "   \"maxLoanAmount\": " + maxLoanAmount + ",\n" +
                 "   \"interestRate\": " + interestRate + ",\n" +
                 "   \"creditTermYears\": " + creditTermYears + ",\n" +

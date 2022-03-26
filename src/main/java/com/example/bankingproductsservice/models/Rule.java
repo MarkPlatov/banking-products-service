@@ -92,12 +92,12 @@ public class Rule {
         this.minSalary = minSalary;
     }
 
-    public Boolean getDebtor() {
+    public Boolean getAllowDebtors() {
         return allowDebtors;
     }
 
-    public void setDebtor(Boolean debtor) {
-        allowDebtors = debtor;
+    public void setAllowDebtors(Boolean allowDebtors) {
+        this.allowDebtors = allowDebtors;
     }
 
     public Product getProduct() {
@@ -122,6 +122,8 @@ public class Rule {
                 "       \"isDebtor\": " + allowDebtors + ",\n" +
                 "   }";
     }
+
+
 
     public void delete() {
         setActive(false);

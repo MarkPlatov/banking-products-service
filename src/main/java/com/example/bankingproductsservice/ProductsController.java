@@ -13,8 +13,6 @@ import java.util.List;
 
 @Controller
 public class ProductsController {
-    private static final String ROUTE = "tasks";
-
     private final ProductRepo productRepo;
     private final RuleRepo ruleRepo;
 
