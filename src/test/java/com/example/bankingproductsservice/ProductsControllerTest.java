@@ -11,6 +11,8 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatcher;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -79,6 +81,45 @@ public class ProductsControllerTest {
 
         String responseBody = productsController.getRules(product.getId());
         Assert.assertThat(responseBody, Matchers.containsString(rule.toString()));
+        Mockito.verify(productRepo, Mockito.times(1)).findById(product.getId());
+    }
+
+    @Test
+    public void getRulesFindProductNullableRules() {
+        Product product = new Product(10, 10, 10);
+        product.setRules(null);
+        product.setId(0);
+        Mockito.doReturn(product)
+                .when(productRepo)
+                .findById(product.getId());
+
+        String responseBody = productsController.getRules(product.getId());
+        Assert.assertEquals("{\n\"rules\": \n[null]\n}", responseBody);
+        Mockito.verify(productRepo, Mockito.times(1)).findById(product.getId());
+    }
+
+    @Test
+    public void getRulesFindNull() {
+        Mockito.doReturn(null)
+                .when(productRepo)
+                .findById(0);
+
+        String responseBody = productsController.getRules(0);
+        Assert.assertEquals("", responseBody);
+        Mockito.verify(productRepo, Mockito.times(1)).findById(0);
+    }
+
+    @Test
+    public void getRulesFindInactiveProduct() {
+        Product product = new Product(10, 10, 10);
+        product.setId(0);
+        product.delete();
+        Mockito.doReturn(product)
+                .when(productRepo)
+                .findById(product.getId());
+
+        String responseBody = productsController.getRules(product.getId());
+        Assert.assertEquals("", responseBody);
         Mockito.verify(productRepo, Mockito.times(1)).findById(product.getId());
     }
 
