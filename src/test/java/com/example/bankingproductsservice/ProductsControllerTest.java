@@ -4,22 +4,17 @@ import com.example.bankingproductsservice.models.Product;
 import com.example.bankingproductsservice.models.Rule;
 import com.example.bankingproductsservice.repos.ProductRepo;
 import com.example.bankingproductsservice.repos.RuleRepo;
-import com.example.bankingproductsservice.seeds.DBSeed;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
-import org.junit.jupiter.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,14 +35,11 @@ public class ProductsControllerTest {
     @MockBean
     private RuleRepo ruleRepo;
 
-    @MockBean
-    private DBSeed dbSeed;
-
 
     @Test
     public void allProductsFindSome() {
         Product product = new Product(10, 10, 10);
-        Mockito.doReturn(new ArrayList(Collections.singleton(product)))
+        Mockito.doReturn(new ArrayList<>(Collections.singleton(product)))
                 .when(productRepo)
                 .findAllByIsActiveTrue();
 
@@ -64,7 +56,7 @@ public class ProductsControllerTest {
 
     @Test
     public void allProductsFindNothing() {
-        Mockito.doReturn(new ArrayList(Collections.singleton(null)))
+        Mockito.doReturn(new ArrayList<>(Collections.singleton(null)))
                 .when(productRepo)
                 .findAllByIsActiveTrue();
 
@@ -226,6 +218,7 @@ public class ProductsControllerTest {
         String responseBody = productsController.addRuleToProduct(productId, minSalary, allowDebtors);
 
         Rule rule = new Rule(product, minSalary, allowDebtors);
+        product.addRule(rule);
 
         Mockito.verify(ruleRepo, Mockito.times(1))
                 .save(ArgumentMatchers.isA(rule.getClass()));
@@ -266,6 +259,63 @@ public class ProductsControllerTest {
     }
 
     @Test
-    public void deleteRule() {
+    public void deleteRuleSuccess() {
+        Integer productId = 1;
+        Integer ruleId = 2;
+        Product product = new Product();
+        Rule rule = new Rule();
+        product.setId(productId);
+        product.addRule(rule);
+        rule.setId(ruleId);
+        rule.setProduct(product);
+
+        Mockito.doReturn(rule)
+                .when(ruleRepo)
+                .findById(ruleId);
+
+        String responseBody = productsController.deleteRule(productId, ruleId);
+        rule.delete();
+
+        Mockito.verify(ruleRepo, Mockito.times(1))
+                .save(rule);
+        Assert.assertEquals("OK", responseBody);
+
+    }
+
+    @Test
+    public void deleteRuleRuleNotFound() {
+        Integer productId = 1;
+        Integer ruleId = 2;
+
+        Mockito.doReturn(null)
+                .when(ruleRepo)
+                .findById(ruleId);
+
+        String responseBody = productsController.deleteRule(productId, ruleId);
+
+        Mockito.verify(ruleRepo, Mockito.times(0))
+                .save(ArgumentMatchers.any(Rule.class));
+
+        Assert.assertEquals("Rule with id = " + ruleId + " not found", responseBody);
+
+    }
+
+    @Test
+    public void deleteRuleProductNotFound() {
+        Integer productId = 1;
+        Integer ruleId = 2;
+        Rule rule = new Rule();
+        rule.setId(ruleId);
+
+        Mockito.doReturn(rule)
+                .when(ruleRepo)
+                .findById(ruleId);
+
+        String responseBody = productsController.deleteRule(productId, ruleId);
+
+        Mockito.verify(ruleRepo, Mockito.times(0))
+                .save(ArgumentMatchers.any(Rule.class));
+        Assert.assertEquals("Incorrect product id or rule id", responseBody);
+
     }
 }

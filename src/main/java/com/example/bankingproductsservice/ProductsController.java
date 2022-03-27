@@ -96,18 +96,21 @@ public class ProductsController {
     /*
     curl -i -X DELETE http://localhost:8080/products/100/rules/102
     */
-    @RequestMapping(value = "/products/{productId}/rules/{ruleID}", method = RequestMethod.DELETE,
+    @RequestMapping(value = "/products/{productId}/rules/{ruleId}", method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody String deleteRule(
             @PathVariable Integer productId,
-            @PathVariable Integer ruleID
+            @PathVariable Integer ruleId
     ) {
-        Rule rule = ruleRepo.findById(ruleID);
+        Rule rule = ruleRepo.findById(ruleId);
         if (rule == null) {
-            return "Product with id = " + productId + " not found";
+            return "Rule with id = " + ruleId + " not found";
         }
         // Если правило не от указанного продукта
-        if (!rule.getProduct().getId().equals(productId)){
+        if (rule.getProduct() == null ||
+                rule.getProduct().getId() == null ||
+                !rule.getProduct().getId().equals(productId)
+        ){
             return "Incorrect product id or rule id";
         }
 
