@@ -1,9 +1,9 @@
 * Сервис должен __работает__ с данными в формате json
 * Правила задаются с помощью POST запросов вида:  
   ```
-  http://localhost:8080/products/{productId}/?min_salary={minSalary}&allow_debtors={allowDebtors}
-  http://localhost:8080/products/{productId}/?min_salary={minSalary}
-  http://localhost:8080/products/{productId}/?allow_debtors={allowDebtors}
+  /products/{productId}/?min_salary={minSalary}&allow_debtors={allowDebtors}
+  /products/{productId}/?min_salary={minSalary}
+  /products/{productId}/?allow_debtors={allowDebtors}
   ```
 * Сервис реализован с помощью Spring Boot
 * Продукты и правила хранятся в PostgreSQL.  
