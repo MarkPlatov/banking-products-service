@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +36,9 @@ public class ProductsControllerTest {
 
     @MockBean
     private ProductRepo productRepo;
+
+    @MockBean
+    private RuleRepo ruleRepo;
 
     @MockBean
     private DBSeed dbSeed;
@@ -204,8 +209,60 @@ public class ProductsControllerTest {
     }
 
     @Test
-    public void addRuleToProduct() {
-        Assert.assertTrue(true);
+    public void addRuleToProductSuccess() {
+        Integer productId = 0;
+        Integer minSalary = 10;
+        Boolean allowDebtors = false;
+
+        Product product = new Product();
+        product.setId(productId);
+        Mockito.doReturn(product)
+                .when(productRepo)
+                .findById(product.getId());
+        Mockito.doReturn(null)
+                .when(ruleRepo)
+                .save(ArgumentMatchers.any(Rule.class));
+
+        String responseBody = productsController.addRuleToProduct(productId, minSalary, allowDebtors);
+
+        Rule rule = new Rule(product, minSalary, allowDebtors);
+
+        Mockito.verify(ruleRepo, Mockito.times(1))
+                .save(ArgumentMatchers.isA(rule.getClass()));
+
+        Assert.assertEquals("OK", responseBody);
+    }
+
+    @Test
+    public void addRuleToProductNullQuery() {
+        Integer productId = 0;
+        Integer minSalary = null;
+        Boolean allowDebtors = null;
+
+        String responseBody = productsController.addRuleToProduct(productId, minSalary, allowDebtors);
+
+        Mockito.verify(ruleRepo, Mockito.times(0))
+                .save(ArgumentMatchers.any(Rule.class));
+
+        Assert.assertEquals("Type minSalary or allowDebtors", responseBody);
+    }
+
+    @Test
+    public void addRuleToProductProductNotFound() {
+        Integer productId = 0;
+        Integer minSalary = 10;
+        Boolean allowDebtors = null;
+
+        Mockito.doReturn(null)
+                .when(productRepo)
+                .findById(productId);
+
+        String responseBody = productsController.addRuleToProduct(productId, minSalary, allowDebtors);
+
+        Mockito.verify(ruleRepo, Mockito.times(0))
+                .save(ArgumentMatchers.any(Rule.class));
+
+        Assert.assertEquals("Product with id = " + productId + " not found", responseBody);
     }
 
     @Test
