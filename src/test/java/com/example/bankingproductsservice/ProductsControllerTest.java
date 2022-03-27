@@ -4,6 +4,7 @@ import com.example.bankingproductsservice.models.Product;
 import com.example.bankingproductsservice.models.Rule;
 import com.example.bankingproductsservice.repos.ProductRepo;
 import com.example.bankingproductsservice.repos.RuleRepo;
+
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-
 
 import java.util.ArrayList;
 import java.util.Collections;
