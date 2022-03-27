@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -107,6 +108,13 @@ public class Product {
 
     public void setRules(Set<Rule> rules) {
         this.rules = rules;
+    }
+
+    public void addRule(Rule rule) {
+        if (rules == null){
+            rules = new HashSet<>();
+        }
+        rules.add(rule);
     }
 
     @Override

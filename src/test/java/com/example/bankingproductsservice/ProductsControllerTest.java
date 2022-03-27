@@ -123,9 +123,84 @@ public class ProductsControllerTest {
         Mockito.verify(productRepo, Mockito.times(1)).findById(product.getId());
     }
 
+    // Пример из ТЗ с заёмщиком №1
     @Test
-    public void getProductsForClient() {
-        Assert.assertTrue(true);
+    public void getProductsForClientExample1() {
+        Integer salary = 30000;
+        Integer claim = 20000;
+        Boolean isDebtor = true;
+
+        Product product1 = new Product(200000, 6, 3);
+        Product product2 = new Product(null, 15, null);
+        Product product3 = new Product(1000000, 12, 5);
+        Rule rule1 = new Rule(product1, 50000);
+        Rule rule2 = new Rule(product1, false);
+        Rule rule3 = new Rule(product2, false);
+        Rule rule4 = new Rule(product3, 25000);
+
+        product1.addRule(rule1);
+        product1.addRule(rule2);
+        product2.addRule(rule3);
+        product3.addRule(rule4);
+
+        List<Product> list1 = new ArrayList<>();
+        List<Product> list2 = new ArrayList<>();
+        list1.add(product1);
+        list1.add(product3);
+        list2.add(product2);
+
+        Mockito.doReturn(list1)
+                .when(productRepo)
+                .findAllByMaxLoanAmountIsGreaterThanEqualAndIsActiveTrue(claim);
+        Mockito.doReturn(list2)
+                .when(productRepo)
+                .findAllByMaxLoanAmountIsNullAndIsActiveTrue();
+
+        String responseBody = productsController.getProductsForClient(salary, claim, isDebtor);
+
+        Assert.assertThat(responseBody, Matchers.not(Matchers.containsString(product1.toString())));
+        Assert.assertThat(responseBody, Matchers.not(Matchers.containsString(product2.toString())));
+        Assert.assertThat(responseBody, Matchers.containsString(product3.toString()));
+    }
+
+    // Пример из ТЗ с заёмщиком №2
+    @Test
+    public void getProductsForClientExample2() {
+        Integer salary = 60000;
+        Integer claim = 300000;
+        Boolean isDebtor = false;
+
+        Product product1 = new Product(200000, 6, 3);
+        Product product2 = new Product(null, 15, null);
+        Product product3 = new Product(1000000, 12, 5);
+        Rule rule1 = new Rule(product1, 50000);
+        Rule rule2 = new Rule(product1, false);
+        Rule rule3 = new Rule(product2, false);
+        Rule rule4 = new Rule(product3, 25000);
+
+        product1.addRule(rule1);
+        product1.addRule(rule2);
+        product2.addRule(rule3);
+        product3.addRule(rule4);
+
+        List<Product> list1 = new ArrayList<>();
+        List<Product> list2 = new ArrayList<>();
+//        list1.add(product1);
+        list1.add(product3);
+        list2.add(product2);
+
+        Mockito.doReturn(list1)
+                .when(productRepo)
+                .findAllByMaxLoanAmountIsGreaterThanEqualAndIsActiveTrue(claim);
+        Mockito.doReturn(list2)
+                .when(productRepo)
+                .findAllByMaxLoanAmountIsNullAndIsActiveTrue();
+
+        String responseBody = productsController.getProductsForClient(salary, claim, isDebtor);
+
+        Assert.assertThat(responseBody, Matchers.not(Matchers.containsString(product1.toString())));
+        Assert.assertThat(responseBody, Matchers.containsString(product2.toString()));
+        Assert.assertThat(responseBody, Matchers.containsString(product3.toString()));
     }
 
     @Test
